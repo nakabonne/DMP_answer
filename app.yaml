@@ -1,5 +1,2 @@
-pi_version: go1
-handlers:
-- url: /.*
-  script: _go_app
-
+runtime: go
+env: flex
