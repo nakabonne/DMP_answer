@@ -17,7 +17,7 @@ import (
 )
 type AnswerJson struct {
     QuestionId int `json:"question_id"`
-    teamId string `json:"team_id"`
+    TeamId string `json:"team_id"`
     Answer string `json: answer"`
 }
 type Question struct{
@@ -210,7 +210,6 @@ func isDevelop() bool {
     return os.Getenv("DEV") == "1"
 }
 func openBigtable(tableName string) (table *bigtable.Table, err error) {
-    var client *bigtable.Client
     if isDevelop() {
         client, err = authenticate()
     } else {
@@ -268,11 +267,13 @@ func readLogs(c echo.Context) error {
         answer := lat + ":" + lon
         answerJson := &AnswerJson{questionId, teamId, answer}
         return c.JSON(http.StatusOK, answerJson)
-  } else {
+    } else {
         stationname := getNearStation(lat, lon)
         fmt.Println(stationname)
-  }
-    return c.String(http.StatusOK, "hogehoge")
+        answer := stationname
+        answerJson := &AnswerJson{questionId, teamId, answer}
+        return c.JSON(http.StatusOK, answerJson)
+    }
 }
 func init() {
     var err error
