@@ -1,2 +1,4 @@
 runtime: go
 env: flex
+env_variables:
+  DEV: 0
