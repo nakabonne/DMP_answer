@@ -18,7 +18,7 @@ import (
 type AnswerJson struct {
     QuestionId int `json:"question_id"`
     TeamId string `json:"team_id"`
-    Answer string `json: answer"`
+    Answer string `json: "answer"`
 }
 type Question struct{
   QuestionId int `json:"question_id"`
@@ -244,7 +244,6 @@ func getNearStation(latitude string, longitude string) string {
 }
 
 func readLogs(c echo.Context) error {
-    // TODO: jsonを読み込んでrowKeyを作る&is_latlonとquestionIDを渡してもらう
     q := new(Question)
     if err := c.Bind(q); err != nil {
         return err
@@ -259,6 +258,7 @@ func readLogs(c echo.Context) error {
     }
     if len(row) == 0{
          answerJson := &AnswerJson{questionId, teamId, "Shibuya"}
+         log.Println(answerJson)
          return c.JSON(http.StatusOK, answerJson)
     } else {
         lat := string(row[family][0].Value)
