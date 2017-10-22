@@ -1,18 +1,19 @@
 package main
+
 import (
-    “net/http”
-    “log”
-    “fmt”
-    “io/ioutil”
-    “os”
-    “github.com/labstack/echo”
-    “github.com/labstack/echo/middleware”
-    “cloud.google.com/go/bigtable”
-    “golang.org/x/net/context”
-    “google.golang.org/api/option”
-    “golang.org/x/oauth2/google”
-    “math”
-    “strconv”
+    "net/http"
+    "log"
+    "fmt"
+    "io/ioutil"
+    "os"
+    "github.com/labstack/echo"
+    "github.com/labstack/echo/middleware"
+    "cloud.google.com/go/bigtable"
+    "golang.org/x/net/context"
+    "google.golang.org/api/option"
+    "golang.org/x/oauth2/google"
+    "math"
+    "strconv"
 )
 type AnswerJson struct {
     QuestionId int `json:"question_id"`
@@ -20,18 +21,18 @@ type AnswerJson struct {
     Answer string `json: answer"`
 }
 type Question struct{
-    QuestionId int `json:"question_id"`
+  QuestionId int `json:"question_id"`
   Idfa string `json:"idfa"`
   Timestamp string `json:"timestamp"`
   IsLatlon bool `json:"is_latlon"`
 }
 const (
-    project   = “ca-intern-201710-team02"
-    instance  = “teamb-bigtable1”
-    tableName = “latlon-table”
-    family    = “Log”
-    teamId    = “b”
-    pathToKeyFile = “ca-intern-201710-team02-4d5815ebcb43.json”
+    project   = "ca-intern-201710-team02"
+    instance  = "teamb-bigtable1"
+    tableName = "latlon-table"
+    family    = "Log"
+    teamId    = "b"
+    pathToKeyFile = "ca-intern-201710-team02-4d5815ebcb43.json"
 )
 var (
     ctx = context.Background()
@@ -45,147 +46,147 @@ type Staiton struct {
 }
 var stations = []*Staiton{
     &Staiton{
-        “Osaki”,
+        "Osaki",
         35.6197,
         139.728553,
     },
     &Staiton{
-        “Gotanda”,
+        "Gotanda",
         35.626446,
         139.723444,
     },
     &Staiton{
-        “Meguro”,
+        "Meguro",
         35.633998,
         139.715828,
     },
     &Staiton{
-        “Ebisu”,
+        "Ebisu",
         35.64669,
         139.710106,
     },
     &Staiton{
-        “Shibuya”,
+        "Shibuya",
         35.658517,
         139.701334,
     },
     &Staiton{
-        “Harajuku”,
+        "Harajuku",
         35.670168,
         139.702687,
     },
     &Staiton{
-        “Yoyogi”,
+        "Yoyogi",
         35.683061,
         139.702042,
     },
     &Staiton{
-        “Shinjuku”,
+        "Shinjuku",
         35.690921,
         139.700258,
     },
     &Staiton{
-        “Shinokubo”,
+        "Shinokubo",
         35.701306,
         139.700044,
     },
     &Staiton{
-        “Takadanobaba”,
+        "Takadanobaba",
         35.712285,
         139.703782,
     },
     &Staiton{
-        “Mejiro”,
+        "Mejiro",
         35.721204,
         139.706587,
     },
     &Staiton{
-        “Ikebukuro”,
+        "Ikebukuro",
         35.728926,
         139.71038,
     },
     &Staiton{
-        “Otsuka”,
+        "Otsuka",
         35.73159,
         139.729329,
     },
     &Staiton{
-        “Sugamo”,
+        "Sugamo",
         35.733492,
         139.739345,
     },
     &Staiton{
-        “Komagome”,
+        "Komagome",
         35.736489,
         139.746875,
     },
     &Staiton{
-        “Tabata”,
+        "Tabata",
         35.738062,
         139.76086,
     },
     &Staiton{
-        “Nishinippori”,
+        "Nishinippori",
         35.732135,
         139.766787,
     },
     &Staiton{
-        “Nippori”,
+        "Nippori",
         35.727772,
         139.770987,
     },
     &Staiton{
-        “Uguisudani”,
+        "Uguisudani",
         35.720495,
         139.778837,
     },
     &Staiton{
-        “Ueno”,
+        "Ueno",
         35.713768,
         139.777254,
     },
     &Staiton{
-        “Okachimachi”,
+        "Okachimachi",
         35.707893,
         139.774332,
     },
     &Staiton{
-        “Akihabara”,
+        "Akihabara",
         35.698683,
         139.774219,
     },
     &Staiton{
-        “Kanda”,
+        "Kanda",
         35.69169,
         139.770883,
     },
     &Staiton{
-        “Tokyo”,
+        "Tokyo",
         35.681382,
         139.766084,
     },
     &Staiton{
-        “Yurakucho”,
+        "Yurakucho",
         35.675069,
         139.763328,
     },
     &Staiton{
-        “Shimbashi”,
+        "Shimbashi",
         35.665498,
         139.75964,
     },
     &Staiton{
-        “Hamamatsucho”,
+        "Hamamatsucho",
         35.655646,
         139.756749,
     },
     &Staiton{
-        “Tamachi”,
+        "Tamachi",
         35.645736,
         139.747575,
     },
     &Staiton{
-        “Shinagawa”,
+        "Shinagawa",
         35.630152,
         139.74044,
     },
@@ -206,7 +207,7 @@ func authenticate() (*bigtable.Client, error) {
     return client, nil
 }
 func isDevelop() bool {
-    return os.Getenv(“DEV”) == “1"
+    return os.Getenv("DEV") == "1"
 }
 func openBigtable(tableName string) (table *bigtable.Table, err error) {
     var client *bigtable.Client
@@ -242,35 +243,40 @@ func getNearStation(latitude string, longitude string) string {
     }
     return nearStation
 }
+
 func readLogs(c echo.Context) error {
     // TODO: jsonを読み込んでrowKeyを作る&is_latlonとquestionIDを渡してもらう
     q := new(Question)
+    if err := c.Bind(q); err != nil {
+        return err
+    }
     isLatLon := q.IsLatlon
     questionId := q.QuestionId
-    rowKey := q.Timestamp + “#” + q.Idfa
+    rowKey := q.Timestamp + "#" + q.Idfa
     row, err := table.ReadRow(ctx, rowKey)
     if err != nil {
         log.Println(err)
     }
     log.Println(rowKey)
-    log.Println(“write table”)
+    log.Println(row)
+    log.Println("write table")
     lat := string(row[family][0].Value)
     lon := string(row[family][1].Value)
-    log.Print(“lat: ” +lat)
-    log.Print(“lon: ” +lon)
+    log.Print("lat: " +lat)
+    log.Print("lon: " +lon)
     if(isLatLon) {
-        answer := lat + “:” + lon
+        answer := lat + ":" + lon
         answerJson := &AnswerJson{questionId, teamId, answer}
         return c.JSON(http.StatusOK, answerJson)
   } else {
         stationname := getNearStation(lat, lon)
         fmt.Println(stationname)
   }
-    return c.String(http.StatusOK, “hogehoge”)
+    return c.String(http.StatusOK, "hogehoge")
 }
 func init() {
     var err error
-    table, err = openBigtable(“latlon-table”)
+    table, err = openBigtable("latlon-table")
     if err != nil {
         log.Fatal(err)
     }
@@ -279,9 +285,9 @@ func main() {
     e := echo.New()
     e.Use(middleware.Logger())
     e.Use(middleware.Recover())
-    e.GET(“/”, func(c echo.Context) error {
-        return c.String(http.StatusOK, “Hello, TeamB!\n”)
+    e.GET("/", func(c echo.Context) error {
+        return c.String(http.StatusOK, "Hello, TeamB!\n")
     })
-    e.POST(“/place”, readLogs)
-    e.Logger.Fatal(e.Start(“:8080”))
+    e.POST("/place", readLogs)
+    e.Logger.Fatal(e.Start(":8080"))
 }
