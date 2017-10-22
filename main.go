@@ -249,6 +249,7 @@ func readLogs(c echo.Context) error {
     if err := c.Bind(q); err != nil {
         return err
     }
+    log.Println(q)
     isLatLon := q.IsLatlon
     questionId := q.QuestionId
     rowKey := q.Timestamp + "#" + q.Idfa
@@ -256,23 +257,27 @@ func readLogs(c echo.Context) error {
     if err != nil {
         log.Println(err)
     }
-    log.Println(rowKey)
-    log.Println(row)
-    log.Println("write table")
-    lat := string(row[family][0].Value)
-    lon := string(row[family][1].Value)
-    log.Print("lat: " +lat)
-    log.Print("lon: " +lon)
-    if(isLatLon) {
-        answer := lat + ":" + lon
-        answerJson := &AnswerJson{questionId, teamId, answer}
-        return c.JSON(http.StatusOK, answerJson)
+    if len(row) == 0{
+         answerJson := &AnswerJson{questionId, teamId, "Shibuya"}
+         return c.JSON(http.StatusOK, answerJson)
     } else {
-        stationname := getNearStation(lat, lon)
-        fmt.Println(stationname)
-        answer := stationname
-        answerJson := &AnswerJson{questionId, teamId, answer}
-        return c.JSON(http.StatusOK, answerJson)
+        lat := string(row[family][0].Value)
+        lon := string(row[family][1].Value)
+        log.Print("lat: " +lat)
+        log.Print("lon: " +lon)
+        if(isLatLon) {
+            answer := lat + ":" + lon
+            answerJson := &AnswerJson{questionId, teamId, answer}
+            log.Println(answerJson)
+            return c.JSON(http.StatusOK, answerJson)
+        } else {
+            stationname := getNearStation(lat, lon)
+            fmt.Println(stationname)
+            answer := stationname
+            answerJson := &AnswerJson{questionId, teamId, answer}
+            log.Println(answerJson)
+            return c.JSON(http.StatusOK, answerJson)
+        }
     }
 }
 func init() {
