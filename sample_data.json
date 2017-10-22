@@ -1,0 +1,22 @@
+
+{
+  "latitude": "35.32543795",
+  "longitude": "139.15825126",
+  "identity": "\\N",
+  "device_id": "5e778b10-40a4-438f-9d62-74e85e7e5c3",
+  "model": "KYV35",
+  "sysname": "ANDROID",
+  "sysver": "6.0.1",
+  "appid": "jp.co.rcsc.yurekuru.android",
+  "appver": "3.5.6",
+  "action": "\\N",
+  "optout": "0",
+  "created_at": "2017-07-03 10:58:22.562504115 +0000 UTC",
+  "seq": "0",
+  "remote_ipaddr": "106.128.8.106",
+  "activity": "\\N",
+  "timestamp": "2017-07-03 10:57:23 +0000 UTC",
+  "sdkver": "2.0.4",
+  "lang": "ja_JP",
+  "timezone": "Asia/Tokyo"
+}
