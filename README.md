@@ -2,7 +2,7 @@
 
 ## Architecture
 
-![result](https://github.com/ryonakao/DMP_answer/blob/master/media/ArchitectureB.png)
+![result](https://github.com/ryonakao/DMP_answer/blob/master/media/architectureB.png)
 
 上記アーキテクチャの"AnswerAPI"の部分。
 CollectAPIは→https://github.com/ryonakao/DMP_collect
